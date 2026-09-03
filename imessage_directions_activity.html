@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iMessage Directions Practice - Speakout B1+</title>
+    <style>
+        :root {
+            --ios-bg: #f2f2f7;
+            --ios-card: #ffffff;
+            --ios-blue: #007aff;
+            --ios-gray-bubble: #e9e9eb;
+            --ios-gray-text: #8e8e93;
+            --ios-dark-text: #000000;
+            --ios-green: #34c759;
+            --ios-border: #d1d1d6;
+            --font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: var(--font-family);
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: #1a1a1e;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: var(--ios-dark-text);
+            padding: 12px;
+        }
+
+        /* App Container (Phone Frame) */
+        .app-container {
+            width: 100%;
+            max-width: 420px;
+            height: 92vh;
+            max-height: 840px;
+            background-color: var(--ios-bg);
+            border-radius: 44px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+            border: 6px solid #2d2d32;
+        }
+
+        /* Phone Header Area */
+        .phone-header {
+            background: rgba(249, 249, 249, 0.92);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 0.5px solid var(--ios-border);
+            padding: 10px 16px 8px 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .phone-status-bar {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            padding: 0 4px;
+            color: #000;
+        }
+
+        .avatar-container {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            color: #2c3e50;
+            font-size: 17px;
+            margin-bottom: 4px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+        }
+
+        .contact-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: #000;
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+
+        .teacher-info-btn {
+            position: absolute;
+            right: 16px;
+            top: 26px;
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+        }
+
+        .teacher-info-btn:hover {
+            opacity: 1;
+        }
+
+        /* Phrase Tracker Bar */
+        .phrase-tracker {
+            background: #ffffff;
+            border-bottom: 0.5px solid var(--ios-border);
+            padding: 8px 12px;
+            font-size: 12px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        }
+
+        .tracker-title {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #444;
+        }
+
+        .tracker-badge {
+            background: #e5e5ea;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            color: #555;
+        }
+
+        .tracker-badge.complete {
+            background: #d1e7dd;
+            color: #0f5132;
+            font-weight: 600;
+        }
+
+        .chips-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            max-height: 52px;
+            overflow-y: auto;
+        }
+
+        .chip {
+            background: #e9e9eb;
+            color: #3a3a3c;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .chip.used {
+            background: var(--ios-green);
+            color: white;
+            font-weight: 500;
+        }
+
+        /* Screen Wrapper */
+        .screen {
+            display: none;
+            flex: 1;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        /* Screen 1: Setup */
+        .setup-screen {
+            padding: 20px;
+            overflow-y: auto;
+            background: #ffffff;
+        }
+
+        .setup-header {
+            margin-bottom: 18px;
+        }
+
+        .setup-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            color: #000;
+        }
+
+        .setup-subtitle {
+            font-size: 13px;
+            color: var(--ios-gray-text);
+            line-height: 1.4;
+        }
+
+        .form-group {
+            margin-bottom: 14px;
+        }
+
+        .form-label {
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            display: block;
+            color: #333;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .category-btn {
+            padding: 10px 8px;
+            border: 1px solid var(--ios-border);
+            border-radius: 12px;
+            background: #f9f9fb;
+            font-size: 13px;
+            cursor: pointer;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+            color: #1c1c1e;
+        }
+
+        .category-btn.selected {
+            border-color: var(--ios-blue);
+            background: #eef6ff;
+            color: var(--ios-blue);
+            font-weight: 600;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--ios-border);
+            border-radius: 10px;
+            font-size: 14px;
+            outline: none;
+            background: #f9f9fb;
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus {
+            border-color: var(--ios-blue);
+            background: #fff;
+        }
+
+        .primary-btn {
+            width: 100%;
+            background: var(--ios-blue);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+            box-shadow: 0 4px 12px rgba(0, 122, 255, 0.25);
+            transition: background 0.2s, transform 0.1s;
+        }
+
+        .primary-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* Screen 2: Chat */
+        .chat-body {
+            flex: 1;
+            padding: 12px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            background-color: var(--ios-bg);
+        }
+
+        .chat-date {
+            text-align: center;
+            font-size: 11px;
+            color: var(--ios-gray-text);
+            margin: 6px 0;
+            font-weight: 500;
+        }
+
+        .message-row {
+            display: flex;
+            flex-direction: column;
+            max-width: 82%;
+            animation: popIn 0.25s cubic-bezier(0.1, 0.9, 0.2, 1);
+        }
+
+        @keyframes popIn {
+            from { opacity: 0; transform: scale(0.95) translateY(6px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .message-row.friend {
+            align-self: flex-start;
+        }
+
+        .message-row.student {
+            align-self: flex-end;
+        }
+
+        .bubble {
+            padding: 10px 14px;
+            border-radius: 18px;
+            font-size: 15px;
+            line-height: 1.35;
+            word-wrap: break-word;
+            position: relative;
+        }
+
+        .friend .bubble {
+            background-color: var(--ios-gray-bubble);
+            color: #000000;
+            border-bottom-left-radius: 4px;
+        }
+
+        .student .bubble {
+            background-color: var(--ios-blue);
+            color: #ffffff;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message-status {
+            font-size: 10px;
+            color: var(--ios-gray-text);
+            align-self: flex-end;
+            margin-top: 2px;
+            margin-right: 4px;
+        }
+
+        /* Typing Indicator */
+        .typing-indicator {
+            display: none;
+            align-self: flex-start;
+            background-color: var(--ios-gray-bubble);
+            padding: 12px 16px;
+            border-radius: 18px;
+            border-bottom-left-radius: 4px;
+            margin-bottom: 6px;
+            width: fit-content;
+        }
+
+        .typing-indicator span {
+            height: 7px;
+            width: 7px;
+            float: left;
+            margin: 0 1.5px;
+            background-color: #8e8e93;
+            display: block;
+            border-radius: 50%;
+            opacity: 0.4;
+            animation: typing 1s infinite;
+        }
+
+        .typing-indicator span:nth-child(1) { animation-delay: 0s; }
+        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typing {
+            0% { opacity: 0.4; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+            100% { opacity: 0.4; transform: scale(1); }
+        }
+
+        /* Input Area */
+        .chat-input-area {
+            background: #ffffff;
+            padding: 8px 12px 12px 12px;
+            border-top: 0.5px solid var(--ios-border);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .chat-input {
+            flex: 1;
+            border: 1px solid var(--ios-border);
+            border-radius: 20px;
+            padding: 8px 14px;
+            font-size: 15px;
+            outline: none;
+            max-height: 90px;
+            resize: none;
+            background: #ffffff;
+            line-height: 1.3;
+        }
+
+        .chat-input:focus {
+            border-color: #a0a0a5;
+        }
+
+        .send-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--ios-blue);
+            color: white;
+            border: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: bold;
+            transition: transform 0.1s, background-color 0.2s;
+            flex-shrink: 0;
+        }
+
+        .send-btn:active {
+            transform: scale(0.92);
+        }
+
+        /* Screen 3: Completion */
+        .completion-screen {
+            padding: 24px 20px;
+            overflow-y: auto;
+            background: #ffffff;
+            text-align: center;
+        }
+
+        .completion-icon {
+            font-size: 48px;
+            margin-bottom: 8px;
+        }
+
+        .completion-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: #000;
+        }
+
+        .report-card {
+            background: #f8f9fa;
+            border-radius: 16px;
+            padding: 14px 16px;
+            text-align: left;
+            margin-bottom: 14px;
+            border: 1px solid #e9ecef;
+        }
+
+        .report-card h4 {
+            font-size: 12px;
+            color: var(--ios-gray-text);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .report-list {
+            list-style: none;
+        }
+
+        .report-list li {
+            font-size: 13px;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #212529;
+        }
+
+        .feedback-box {
+            background: #fff3cd;
+            border: 1px solid #ffeeba;
+            border-radius: 12px;
+            padding: 12px;
+            text-align: left;
+            font-size: 13px;
+            color: #856404;
+            margin-bottom: 16px;
+            line-height: 1.4;
+        }
+
+        .secondary-btn {
+            width: 100%;
+            background: #e5e5ea;
+            color: #000000;
+            border: none;
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 8px;
+            transition: background 0.2s;
+        }
+
+        /* Modal Teacher Info */
+        .modal {
+            display: none;
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            max-width: 360px;
+            max-height: 82%;
+            overflow-y: auto;
+            font-size: 13px;
+            line-height: 1.5;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .modal-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #000;
+        }
+
+        .close-modal {
+            background: var(--ios-blue);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            margin-top: 14px;
+            cursor: pointer;
+            float: right;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <!-- Header Area -->
+    <div class="phone-header">
+        <div class="phone-status-bar">
+            <span>9:41</span>
+            <span>📶 🔋</span>
+        </div>
+        <div class="avatar-container" id="friendAvatar">A</div>
+        <div class="contact-name">
+            <span id="friendNameDisplay">Alex</span> 
+            <span style="color: var(--ios-gray-text); font-weight: normal; font-size: 11px;">></span>
+        </div>
+        <button class="teacher-info-btn" onclick="toggleTeacherModal()" title="Teacher Information">ℹ️</button>
+    </div>
+
+    <!-- Target Phrases Tracker Panel -->
+    <div class="phrase-tracker" id="trackerPanel" style="display:none;">
+        <div class="tracker-title">
+            <span>Direction phrases used:</span>
+            <span class="tracker-badge" id="trackerCount">0/5</span>
+        </div>
+        <div class="chips-container" id="chipsContainer">
+            <!-- Dynamic Chips -->
+        </div>
+    </div>
+
+    <!-- SCREEN 1: SETUP -->
+    <div class="screen setup-screen active" id="setupScreen">
+        <div class="setup-header">
+            <h2 class="setup-title">Plan a Meeting 📍</h2>
+            <p class="setup-subtitle">Your friend is visiting your city this weekend. Recommend a place to meet and give clear directions!</p>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">1. Choose a type of place:</label>
+            <div class="category-grid">
+                <button class="category-btn selected" onclick="selectCategory('☕ Café', 'Urban Space 100')">☕ Café</button>
+                <button class="category-btn" onclick="selectCategory('🍽 Restaurant', 'Pasage Gartenberg')">🍽 Restaurant</button>
+                <button class="category-btn" onclick="selectCategory('🎵 Music Venue', 'Panorama Club')">🎵 Live Music</button>
+                <button class="category-btn" onclick="selectCategory('🌳 Park', 'Shevchenko Park')">🌳 Park</button>
+                <button class="category-btn" onclick="selectCategory('🎨 Museum', 'Art Museum')">🎨 Museum</button>
+                <button class="category-btn" onclick="selectCategory('🛍 Shopping', 'Promprylad')">🛍 Shopping</button>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">2. Place name:</label>
+            <input type="text" id="placeName" class="form-input" value="Urban Space 100">
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">3. Friend's starting point:</label>
+            <input type="text" id="startPoint" class="form-input" value="Railway Station">
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">4. Why recommend it? (Reason):</label>
+            <input type="text" id="placeReason" class="form-input" value="it has great coffee and live music">
+        </div>
+
+        <button class="primary-btn" onclick="startChat()">Start iMessage Chat 💬</button>
+    </div>
+
+    <!-- SCREEN 2: CHAT -->
+    <div class="screen" id="chatScreen">
+        <div class="chat-body" id="chatBody">
+            <div class="chat-date">Today 9:41 AM</div>
+            <!-- Dynamic Messages -->
+        </div>
+
+        <div class="typing-indicator" id="typingIndicator">
+            <span></span><span></span><span></span>
+        </div>
+
+        <div class="chat-input-area">
+            <textarea id="chatInput" class="chat-input" rows="1" placeholder="iMessage" onkeydown="handleKeyPress(event)"></textarea>
+            <button class="send-btn" onclick="sendMessage()">↑</button>
+        </div>
+    </div>
+
+    <!-- SCREEN 3: COMPLETION -->
+    <div class="screen completion-screen" id="completionScreen">
+        <div class="completion-icon">🎉</div>
+        <h2 class="completion-title">Conversation Complete!</h2>
+
+        <div class="report-card">
+            <h4>Communication Summary</h4>
+            <ul class="report-list">
+                <li>✓ Clear meeting point specified</li>
+                <li>✓ Route & transport instructions given</li>
+                <li>✓ Target direction phrases utilized</li>
+                <li>✓ Friend successfully understood how to arrive!</li>
+            </ul>
+        </div>
+
+        <div class="report-card">
+            <h4>Your Target Language</h4>
+            <div class="chips-container" id="completedPhrasesContainer" style="max-height: none;">
+                <!-- Mastered Chips -->
+            </div>
+        </div>
+
+        <div class="feedback-box" id="feedbackBox">
+            <strong>💡 One Thing to Improve:</strong><br>
+            <span id="feedbackText">Great communication! All your instructions were clear.</span>
+        </div>
+
+        <button class="primary-btn" onclick="restartSame()">🔄 Try the same conversation again</button>
+        <button class="secondary-btn" onclick="resetAll()">💬 Start a new conversation</button>
+    </div>
+
+    <!-- TEACHER INFO MODAL -->
+    <div class="modal" id="teacherModal">
+        <div class="modal-content">
+            <div class="modal-title">Teacher Information 👩‍🏫</div>
+            <p><strong>Learning Objective:</strong> Students practise giving directions, describing exact locations, and suggesting routes using language from exercises 8A and 8B through an authentic messaging interaction.</p>
+            <br>
+            <p><strong>Target Phrases (Units 8A/8B):</strong></p>
+            <ul style="padding-left: 16px; margin-top: 4px;">
+                <li>the best/fastest/cheapest/easiest way</li>
+                <li>take the bus/taxi/train</li>
+                <li>get on / get off</li>
+                <li>walk down</li>
+                <li>turn right / turn left</li>
+                <li>opposite / just opposite</li>
+                <li>on the corner of</li>
+                <li>500 m down the road / X-minute walk</li>
+            </ul>
+            <br>
+            <p><strong>Success Criteria:</strong></p>
+            <ul style="padding-left: 16px; margin-top: 4px;">
+                <li>5+ target phrases used</li>
+                <li>Clear route & transport instructions</li>
+                <li>Exact location described</li>
+                <li>Friend understands without confusion</li>
+            </ul>
+            <button class="close-modal" onclick="toggleTeacherModal()">Close</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // --- Target Phrases Definition ---
+    const TARGET_PHRASES = [
+        { id: 'best_way', pattern: /(best|fastest|cheapest|easiest) way/i, label: 'the best/fastest way' },
+        { id: 'take_transport', pattern: /take (the|a)? (bus|taxi|train|cab)/i, label: 'take the bus/taxi' },
+        { id: 'get_on', pattern: /get on/i, label: 'get on' },
+        { id: 'get_off', pattern: /get off/i, label: 'get off' },
+        { id: 'walk_down', pattern: /walk (down|along|up)/i, label: 'walk down...' },
+        { id: 'turn', pattern: /turn (left|right)/i, label: 'turn left/right' },
+        { id: 'opposite', pattern: /opposite/i, label: 'opposite' },
+        { id: 'on_corner', pattern: /on the corner/i, label: 'on the corner' },
+        { id: 'time_journey', pattern: /(\d+[- ]minute|journey takes|minute walk|minute drive|down the road)/i, label: 'X-minute walk/drive' }
+    ];
+
+    // --- State Variables ---
+    let state = {
+        friendName: "Alex",
+        category: "☕ Café",
+        placeName: "",
+        startPoint: "",
+        placeReason: "",
+        usedPhrases: new Set(),
+        turnCount: 0,
+        askedReason: false,
+        askedRoute: false,
+        askedOff: false,
+        askedWalk: false,
+        askedExact: false,
+        errorsLogged: []
+    };
+
+    // --- UI Helpers ---
+    function selectCategory(cat, defaultPlace) {
+        state.category = cat;
+        document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('selected'));
+        event.currentTarget.classList.add('selected');
+        document.getElementById('placeName').value = defaultPlace;
+    }
+
+    function toggleTeacherModal() {
+        const modal = document.getElementById('teacherModal');
+        modal.style.display = modal.style.display === 'flex' ? 'none' : 'flex';
+    }
+
+    function renderTracker() {
+        const container = document.getElementById('chipsContainer');
+        container.innerHTML = '';
+        
+        TARGET_PHRASES.forEach(phrase => {
+            const isUsed = state.usedPhrases.has(phrase.id);
+            const chip = document.createElement('div');
+            chip.className = `chip ${isUsed ? 'used' : ''}`;
+            chip.textContent = `${isUsed ? '✓ ' : '○ '}${phrase.label}`;
+            container.appendChild(chip);
+        });
+
+        const badge = document.getElementById('trackerCount');
+        const count = state.usedPhrases.size;
+        badge.textContent = `${count}/5`;
+        if (count >= 5) {
+            badge.classList.add('complete');
+        } else {
+            badge.classList.remove('complete');
+        }
+    }
+
+    function checkTargetPhrases(text) {
+        TARGET_PHRASES.forEach(phrase => {
+            if (phrase.pattern.test(text)) {
+                state.usedPhrases.add(phrase.id);
+            }
+        });
+        renderTracker();
+    }
+
+    // --- Screen Transitions ---
+    function showScreen(screenId) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById(screenId).classList.add('active');
+    }
+
+    function startChat() {
+        state.placeName = document.getElementById('placeName').value.trim() || 'the café';
+        state.startPoint = document.getElementById('startPoint').value.trim() || 'the station';
+        state.placeReason = document.getElementById('placeReason').value.trim() || 'it has good coffee';
+        
+        document.getElementById('trackerPanel').style.display = 'block';
+        renderTracker();
+        showScreen('chatScreen');
+
+        // Initial Friend Message
+        setTimeout(() => {
+            addFriendMessage(`Hey! I just arrived at ${state.startPoint} 😊 Where should we meet up tonight?`);
+        }, 600);
+    }
+
+    // --- Messaging Logic ---
+    function handleKeyPress(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            sendMessage();
+        }
+    }
+
+    function sendMessage() {
+        const input = document.getElementById('chatInput');
+        const text = input.value.trim();
+        if (!text) return;
+
+        addStudentMessage(text);
+        input.value = '';
+        checkTargetPhrases(text);
+
+        // Analyze and respond
+        showTyping(true);
+        setTimeout(() => {
+            showTyping(false);
+            processStudentInput(text);
+        }, 1100 + Math.random() * 800);
+    }
+
+    function addStudentMessage(text) {
+        const chatBody = document.getElementById('chatBody');
+        const row = document.createElement('div');
+        row.className = 'message-row student';
+        row.innerHTML = `
+            <div class="bubble">${escapeHTML(text)}</div>
+            <div class="message-status">Delivered</div>
+        `;
+        chatBody.appendChild(row);
+        scrollToBottom();
+    }
+
+    function addFriendMessage(text) {
+        const chatBody = document.getElementById('chatBody');
+        const row = document.createElement('div');
+        row.className = 'message-row friend';
+        row.innerHTML = `<div class="bubble">${text}</div>`;
+        chatBody.appendChild(row);
+        scrollToBottom();
+    }
+
+    function showTyping(show) {
+        const indicator = document.getElementById('typingIndicator');
+        indicator.style.display = show ? 'block' : 'none';
+        if (show) scrollToBottom();
+    }
+
+    function scrollToBottom() {
+        const chatBody = document.getElementById('chatBody');
+        chatBody.scrollTop = chatBody.scrollHeight;
+    }
+
+    function escapeHTML(str) {
+        return str.replace(/[&<>'"]/g, 
+            tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
+        );
+    }
+
+    // --- Natural Conversational Engine ---
+    function processStudentInput(text) {
+        state.turnCount++;
+
+        // 1. Common English errors causing realistic misunderstandings
+        
+        // Error: "opposite of" -> model standard English naturally
+        if (/opposite of/i.test(text)) {
+            state.errorsLogged.push("Say 'opposite the station' (without 'of').");
+            addFriendMessage(`Opposite the station? 😅 Got it, so directly across from it!`);
+            return;
+        }
+
+        // Error: "turn right/left the street" (missing preposition 'at', 'into', 'on')
+        if (/turn (right|left) (the|a) [a-z]+/i.test(text) && !/turn (right|left) (at|into|on)/i.test(text)) {
+            state.errorsLogged.push("Remember: 'turn left/right AT the corner/street'.");
+            addFriendMessage(`Turn right where exactly? At the main square? 😅`);
+            return;
+        }
+
+        // Error: Unclear transport instruction e.g. "go bus 10" or "take bus" without detail
+        if (/go (bus|train|taxi)/i.test(text)) {
+            addFriendMessage(`Bus 10? 😅 Do you mean I should take bus number 10?`);
+            return;
+        }
+
+        // 2. Progression & Natural Question Flow
+
+        // Stage 1: Recommendation & Place Name
+        if (!state.askedReason && !text.toLowerCase().includes(state.placeName.toLowerCase())) {
+            addFriendMessage(`Sounds cool! What's the name of the place and why do you recommend it?`);
+            state.askedReason = true;
+            return;
+        }
+
+        if (!state.askedReason) {
+            state.askedReason = true;
+            addFriendMessage(`Oh nice, ${state.placeName}! What's the best way to get there from ${state.startPoint}?`);
+            state.askedRoute = true;
+            return;
+        }
+
+        // Stage 2: Main Transport / Route
+        if (!state.askedRoute) {
+            state.askedRoute = true;
+            if (!/bus|taxi|train|walk|drive/i.test(text)) {
+                addFriendMessage(`Cool! Should I walk or take the bus or a taxi from here?`);
+                return;
+            } else {
+                addFriendMessage(`Got it. Which stop or station should I get off at?`);
+                state.askedOff = true;
+                return;
+            }
+        }
+
+        // Stage 3: Getting off & Walking Directions
+        if (!state.askedOff) {
+            state.askedOff = true;
+            if (!/get off|stop|station|square/i.test(text)) {
+                addFriendMessage(`Wait, where do I get off? At the central stop? 🚌`);
+                return;
+            } else {
+                addFriendMessage(`Okay, I get off there! Which street do I walk down after that?`);
+                state.askedWalk = true;
+                return;
+            }
+        }
+
+        // Stage 4: Exact Location
+        if (!state.askedWalk) {
+            state.askedWalk = true;
+            addFriendMessage(`Almost there! How will I recognise the building? Is it on the corner or opposite something?`);
+            state.askedExact = true;
+            return;
+        }
+
+        // Check completion criteria: at least 5 target phrases used AND sufficient turns
+        if (state.usedPhrases.size >= 5 || state.turnCount >= 5) {
+            addFriendMessage(`Awesome! Thanks for the clear directions 🙌 I'm heading over now, see you in 15 minutes!`);
+            setTimeout(() => {
+                showCompletionScreen();
+            }, 2200);
+        } else {
+            // Prompt for missing direction details naturally
+            const promptMsg = getNaturalPromptForMissingPhrases();
+            addFriendMessage(promptMsg);
+        }
+    }
+
+    function getNaturalPromptForMissingPhrases() {
+        if (!state.usedPhrases.has('opposite') && !state.usedPhrases.has('on_corner')) {
+            return `Perfect! Is it on the corner of the street or opposite the main entrance?`;
+        }
+        if (!state.usedPhrases.has('time_journey')) {
+            return `Sounds easy! How long is the walk from the stop? About a 5-minute walk?`;
+        }
+        return `Got it! Just to be sure, is there any landmark 500 m down the road so I don't get lost?`;
+    }
+
+    // --- Completion Screen Logic ---
+    function showCompletionScreen() {
+        document.getElementById('trackerPanel').style.display = 'block';
+        showScreen('completionScreen');
+
+        // Mastered Phrases Chips
+        const container = document.getElementById('completedPhrasesContainer');
+        container.innerHTML = '';
+        TARGET_PHRASES.forEach(p => {
+            if (state.usedPhrases.has(p.id)) {
+                const chip = document.createElement('div');
+                chip.className = 'chip used';
+                chip.textContent = `✓ ${p.label}`;
+                container.appendChild(chip);
+            }
+        });
+
+        // Specific Language Tip
+        const feedbackEl = document.getElementById('feedbackText');
+        if (state.errorsLogged.length > 0) {
+            feedbackEl.innerHTML = state.errorsLogged[0];
+        } else {
+            feedbackEl.innerHTML = "Great communication! All your instructions were clear and easy to follow.";
+        }
+    }
+
+    function restartSame() {
+        state.usedPhrases.clear();
+        state.turnCount = 0;
+        state.askedReason = false;
+        state.askedRoute = false;
+        state.askedOff = false;
+        state.askedWalk = false;
+        state.askedExact = false;
+        state.errorsLogged = [];
+
+        document.getElementById('chatBody').innerHTML = '<div class="chat-date">Today 9:41 AM</div>';
+        startChat();
+    }
+
+    function resetAll() {
+        state.usedPhrases.clear();
+        state.turnCount = 0;
+        state.askedReason = false;
+        state.askedRoute = false;
+        state.askedOff = false;
+        state.askedWalk = false;
+        state.askedExact = false;
+        state.errorsLogged = [];
+
+        document.getElementById('chatBody').innerHTML = '<div class="chat-date">Today 9:41 AM</div>';
+        document.getElementById('trackerPanel').style.display = 'none';
+        showScreen('setupScreen');
+    }
+</script>
+</body>
+</html>
